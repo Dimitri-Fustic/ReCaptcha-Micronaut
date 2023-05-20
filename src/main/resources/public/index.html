@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>reCAPTCHA Example</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+<h1>reCAPTCHA Example</h1>
+
+<form>
+    <!-- Enter your site key here -->
+    <div class="g-recaptcha" data-sitekey="SITE_KEY_HERE" data-callback="onCaptchaComplete"></div>
+    <br>
+    <button id="submitButton" type="button" disabled onclick="submitForm()">Submit</button>
+</form>
+
+<script>
+    function onCaptchaComplete() {
+        document.getElementById("submitButton").disabled = false;
+    }
+
+    function submitForm() {
+        let captchaResponse = grecaptcha.getResponse();
+        console.log(`${captchaResponse}`);
+        if (captchaResponse.length === 0) {
+            alert("Please complete the reCAPTCHA.");
+            return;
+        }
+
+        fetch('/verify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({captchaResponse: captchaResponse})
+        })
+        .then(function(response) {
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw new Error('An error occurred. Please try again later.');
+            }
+        })
+        .then(function(data) {
+            alert(data);
+        })
+        .catch(function(error) {
+            alert(error.message);
+        });
+    }
+</script>
+</body>
+</html>

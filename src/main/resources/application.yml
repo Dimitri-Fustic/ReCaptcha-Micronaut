@@ -1,0 +1,15 @@
+micronaut:
+  # Allow usage of static files in /resources/public
+  router:
+    static-resources:
+      default:
+        enabled: true
+        mapping: "/public/**"
+        paths: "classpath:public"
+
+  application:
+    name: reCaptcha
+netty:
+  default:
+    allocator:
+      max-order: 3
